@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace Tank
 {
-    class Tank : PictureBox
+    class Tank : Object
     {
         private bool up;
         private bool down;
