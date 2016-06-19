@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Tank
 {
-    class Bullet : PictureBox
+    class Bullet : Object
     {
         private bool direction;
         private int speed;
