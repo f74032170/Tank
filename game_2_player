@@ -1,0 +1,155 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Tank
+{
+    public partial class Form_game_2player : Form
+    {
+        private Form_stage form_stage;
+        private Tank player1;
+        private Tank player2;
+        private KeyEventArgs repeat;
+        private ImageList[][][] imageList_tank;
+
+        public Form_game_2player(Form_stage form_stage/*, Object[,] map*/)
+        {
+            InitializeComponent();
+            this.form_stage = form_stage;
+        }
+
+        private void timer_move_Tick(object sender, EventArgs e)
+        {
+            PlayerMove();
+        }
+
+        private void PlayerMove()
+        {
+            if (player1.dirDown && !Collision_Down(player1, player2)) player1.MoveDown();
+            if (player1.dirLeft) player1.MoveLeft();
+            if (player1.dirRight) player1.MoveRight();
+            if (player1.dirUp && !Collision_Top(player1,player2)) player1.MoveUp();
+            if (player2.dirDown && !Collision_Down(player2, player1)) player2.MoveDown();
+            if (player2.dirLeft) player2.MoveLeft();
+            if (player2.dirRight) player2.MoveRight();
+            if (player2.dirUp && !Collision_Top(player2, player1)) player2.MoveUp();
+        }
+
+        private void Form_game_2player_Load(object sender, EventArgs e)
+        {
+            this.BackColor = System.Drawing.Color.Black;
+            this.player1 = new Tank(imageList1);
+            this.player2 = new Tank(imageList2);
+            this.Controls.Add(player2);
+            this.Controls.Add(player1);
+        }
+
+        private void Form_game_2player_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Equals(repeat))
+            {
+                return;
+            }
+            repeat = e;
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                    player1.dirLeft = true;
+                    break;
+                case Keys.Right:
+                    player1.dirRight = true;
+                    break;
+                case Keys.Down:
+                    player1.dirDown = true;
+                    break;
+                case Keys.Up:
+                    player1.dirUp = true;
+                    break;
+                case Keys.W:
+                    player2.dirUp = true;
+                    break;
+                case Keys.A:
+                    player2.dirLeft = true;
+                    break;
+                case Keys.S:
+                    player2.dirDown = true;
+                    break;
+                case Keys.D:
+                    player2.dirRight = true;
+                    break;
+            }
+            PlayerMove();
+            timer_move.Start();
+        }
+
+        private void Form_game_2player_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                    player1.dirLeft = false;
+                    break;
+                case Keys.Right:
+                    player1.dirRight = false;
+                    break;
+                case Keys.Down:
+                    player1.dirDown = false;
+                    break;
+                case Keys.Up:
+                    player1.dirUp = false;
+                    break;
+                case Keys.W:
+                    player2.dirUp = false;
+                    break;
+                case Keys.A:
+                    player2.dirLeft = false;
+                    break;
+                case Keys.S:
+                    player2.dirDown = false;
+                    break;
+                case Keys.D:
+                    player2.dirRight = false;
+                    break;
+            }
+
+            if (!(player1.dirDown || player1.dirLeft || player1.dirRight || player1.dirUp ||
+                player2.dirDown || player2.dirLeft || player2.dirRight || player2.dirUp))
+            {
+                timer_move.Stop();
+            }
+        }
+
+        private void Form_game_2player_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+        }
+        public Boolean Collision_Top(PictureBox tar,PictureBox ob)
+        {
+            
+                    PictureBox temp1 = new PictureBox();
+                    temp1.Bounds = ob.Bounds;
+                    temp1.SetBounds(temp1.Location.X+10 , temp1.Location.Y +30, temp1.Width-14, 1);
+                    if (tar.Bounds.IntersectsWith(temp1.Bounds))
+                        return true;
+                
+            return false;
+        }
+        public Boolean Collision_Down(PictureBox tar, PictureBox ob)
+        {
+
+            PictureBox temp1 = new PictureBox();
+            temp1.Bounds = ob.Bounds;
+            temp1.SetBounds(temp1.Location.X + 10, temp1.Location.Y , temp1.Width - 14, 1);
+            if (tar.Bounds.IntersectsWith(temp1.Bounds))
+                return true;
+
+            return false;
+        }
+    }
+}
